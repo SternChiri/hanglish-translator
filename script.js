@@ -25,7 +25,7 @@ const languageResources = {
         noContent: "没有内容可复制",
         copied: "已复制!",
         maxChars: "字符数超过限制 (最大1000字符)",
-        footer: '© 2025 漢glish翻译器 | 源：小红书<a href="https://xhslink.com/m/11a8HrimSsm" target="_blank">@安处岛</a>'
+        footer: '© 2025 漢glish翻译器 | 漢glish概念源自：<a href="https://xhslink.com/m/11a8HrimSsm" target="_blank">@安处岛</a>'
     },
     ja: {
         languageText: "中文",
@@ -49,7 +49,7 @@ const languageResources = {
         noContent: "コピーする内容がありません",
         copied: "コピーしました!",
         maxChars: "文字数制限を超えています (最大1000文字)",
-        footer: '© 2025 漢glish翻訳器 | 元：小红书<a href="https://xhslink.com/m/11a8HrimSsm" target="_blank">@安处岛</a>'
+        footer: '© 2025 漢glish翻訳器 | 漢glishコンセプト提供：<a href="https://xhslink.com/m/11a8HrimSsm" target="_blank">@安处岛</a>'
     }
 };
 
