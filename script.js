@@ -1,5 +1,5 @@
 // 配置 - 后端API地址
-const API_BASE_URL = 'https://sternchiri.pythonanywhere.com/'; // PythonAnywhere域名
+const API_BASE_URL = 'https://sternchiri.pythonanywhere.com'; // PythonAnywhere域名
 
 // 语言资源
 const languageResources = {
@@ -55,11 +55,21 @@ const languageResources = {
 
 let currentLanguage = 'zh'; // 默认中文
 let currentSessionId = localStorage.getItem('session_id') || generateSessionId();
+let currentPollingInterval = null;
 
 function generateSessionId() {
     const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('session_id', sessionId);
     return sessionId;
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    if (minutes > 0) {
+        return `${minutes}分${remainingSeconds}秒`;
+    }
+    return `${remainingSeconds}秒`;
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -144,8 +154,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // 翻译按钮点击事件
-    translateBtn.addEventListener('click', function () {
+    // 翻译按钮点击事件 - 异步版本
+    translateBtn.addEventListener('click', async function () {
         const text = inputText.value.trim();
         if (!text) {
             alert(languageResources[currentLanguage].noInput);
@@ -164,45 +174,126 @@ document.addEventListener('DOMContentLoaded', function () {
         translateBtn.classList.add('disabled');
         translateBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i><span>${languageResources[currentLanguage].translatingBtn}</span>`;
 
-        // 发送翻译请求
-        fetch(`${API_BASE_URL}/translate`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Session-ID': currentSessionId
-            },
-            body: JSON.stringify({ text: text })
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.error) {
-                    outputText.value = languageResources[currentLanguage].error + ': ' + data.error;
-                    translationStatus.textContent = languageResources[currentLanguage].error;
-                } else {
-                    outputText.value = data.translated;
-                    translationStatus.textContent = languageResources[currentLanguage].complete;
-                }
-                translateBtn.disabled = false;
-                translateBtn.classList.remove('disabled');
-                translateBtn.innerHTML = `<i class="fas fa-exchange-alt"></i><span>${languageResources[currentLanguage].translate}</span>`;
-            })
-            .catch(error => {
-                console.error('Translation error:', error);
-                outputText.value = languageResources[currentLanguage].networkError + ': ' + error.message;
-                translationStatus.textContent = languageResources[currentLanguage].networkError;
-                translateBtn.disabled = false;
-                translateBtn.classList.remove('disabled');
-                translateBtn.innerHTML = `<i class="fas fa-exchange-alt"></i><span>${languageResources[currentLanguage].translate}</span>`;
+        try {
+            // 1. 创建异步翻译任务
+            const createResponse = await fetch(`${API_BASE_URL}/async_translate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Session-ID': currentSessionId
+                },
+                body: JSON.stringify({ text: text })
             });
+
+            if (!createResponse.ok) {
+                throw new Error(`创建任务失败! 状态: ${createResponse.status}`);
+            }
+
+            const taskData = await createResponse.json();
+            const taskId = taskData.task_id;
+            
+            console.log(`任务已创建: ${taskId}`);
+            
+            // 更新session_id
+            if (taskData.session_id) {
+                currentSessionId = taskData.session_id;
+                localStorage.setItem('session_id', currentSessionId);
+            }
+
+            // 2. 轮询任务状态
+            const pollInterval = 3000; // 每3秒检查一次
+            const maxPollTime = 1200000; // 最大轮询时间20分钟
+            let pollCount = 0;
+            const maxPollCount = maxPollTime / pollInterval;
+            let startTime = Date.now();
+
+            const pollTaskStatus = async () => {
+                try {
+                    const statusResponse = await fetch(`${API_BASE_URL}/task_status/${taskId}`);
+                    
+                    if (!statusResponse.ok) {
+                        throw new Error(`检查任务状态失败! 状态: ${statusResponse.status}`);
+                    }
+
+                    const statusData = await statusResponse.json();
+                    pollCount++;
+                    
+                    const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                    console.log(`轮询任务状态 ${pollCount}/${maxPollCount}: ${statusData.status}, 已等待: ${formatTime(elapsedSeconds)}`);
+
+                    if (statusData.status === 'completed') {
+                        // 任务完成，显示结果
+                        outputText.value = statusData.translated;
+                        translationStatus.textContent = languageResources[currentLanguage].complete;
+                        if (statusData.session_id) {
+                            currentSessionId = statusData.session_id;
+                            localStorage.setItem('session_id', currentSessionId);
+                        }
+                        return { done: true, success: true };
+                    } else if (statusData.status === 'failed') {
+                        // 任务失败，显示错误
+                        outputText.value = languageResources[currentLanguage].error + ': ' + statusData.error;
+                        translationStatus.textContent = languageResources[currentLanguage].error;
+                        return { done: true, success: false };
+                    } else if (pollCount >= maxPollCount) {
+                        // 超过最大轮询次数
+                        outputText.value = '翻译任务超时，DeepSeek API需要更多时间处理，请稍后重试';
+                        translationStatus.textContent = '轮询超时';
+                        return { done: true, success: false };
+                    } else {
+                        // 任务仍在处理中，更新状态信息
+                        const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+                        translationStatus.textContent = `翻译中... 已等待 ${elapsedMinutes} 分钟，请耐心等待（DeepSeek正在深度思考）`;
+                        return { done: false };
+                    }
+                } catch (error) {
+                    console.error('轮询请求失败:', error);
+                    if (pollCount >= maxPollCount) {
+                        outputText.value = languageResources[currentLanguage].networkError + ': ' + error.message;
+                        translationStatus.textContent = '轮询失败';
+                        return { done: true, success: false };
+                    }
+                    return { done: false };
+                }
+            };
+
+            // 开始轮询
+            const checkCompletion = async () => {
+                const result = await pollTaskStatus();
+                if (!result.done) {
+                    // 如果未完成，继续轮询
+                    currentPollingInterval = setTimeout(checkCompletion, pollInterval);
+                } else {
+                    // 无论成功失败，恢复按钮状态
+                    translateBtn.disabled = false;
+                    translateBtn.classList.remove('disabled');
+                    translateBtn.innerHTML = `<i class="fas fa-exchange-alt"></i><span>${languageResources[currentLanguage].translate}</span>`;
+                    currentPollingInterval = null;
+                }
+            };
+
+            // 启动轮询循环
+            currentPollingInterval = setTimeout(checkCompletion, pollInterval);
+
+        } catch (error) {
+            console.error('创建翻译任务失败:', error);
+            outputText.value = languageResources[currentLanguage].networkError + ': ' + error.message;
+            translationStatus.textContent = languageResources[currentLanguage].networkError;
+            
+            translateBtn.disabled = false;
+            translateBtn.classList.remove('disabled');
+            translateBtn.innerHTML = `<i class="fas fa-exchange-alt"></i><span>${languageResources[currentLanguage].translate}</span>`;
+        }
     });
 
     // 清空按钮点击事件
     clearBtn.addEventListener('click', function () {
+        // 清除轮询定时器
+        if (currentPollingInterval) {
+            clearTimeout(currentPollingInterval);
+            currentPollingInterval = null;
+        }
+        
         inputText.value = '';
         outputText.value = '';
         charCount.textContent = '0';
@@ -219,18 +310,35 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        outputText.select();
-        document.execCommand('copy');
+        // 使用现代Clipboard API
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(outputText.value)
+                .then(() => {
+                    showCopySuccess();
+                })
+                .catch(() => {
+                    fallbackCopyText();
+                });
+        } else {
+            fallbackCopyText();
+        }
 
-        // 显示复制成功提示
-        const originalTitle = copyBtn.getAttribute('title');
-        copyBtn.setAttribute('title', languageResources[currentLanguage].copied);
-        copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+        function fallbackCopyText() {
+            outputText.select();
+            document.execCommand('copy');
+            showCopySuccess();
+        }
 
-        setTimeout(() => {
-            copyBtn.setAttribute('title', originalTitle);
-            copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
-        }, 2000);
+        function showCopySuccess() {
+            const originalTitle = copyBtn.getAttribute('title');
+            copyBtn.setAttribute('title', languageResources[currentLanguage].copied);
+            copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+
+            setTimeout(() => {
+                copyBtn.setAttribute('title', originalTitle);
+                copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+            }, 2000);
+        }
     });
 
     // 按Enter键翻译 (Ctrl+Enter)
@@ -242,8 +350,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 新会话按钮（如果需要可以添加）
     function newSession() {
+        // 清除轮询定时器
+        if (currentPollingInterval) {
+            clearTimeout(currentPollingInterval);
+            currentPollingInterval = null;
+        }
+        
         currentSessionId = generateSessionId();
         outputText.value = '';
         translationStatus.textContent = languageResources[currentLanguage].waiting;
     }
+
+    // 添加新会话按钮到页面（可选）
+    // 可以在HTML中添加一个按钮，然后在这里绑定事件
+    // document.getElementById('new-session-btn').addEventListener('click', newSession);
 });
