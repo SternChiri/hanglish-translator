@@ -63,15 +63,6 @@ function generateSessionId() {
     return sessionId;
 }
 
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    if (minutes > 0) {
-        return `${minutes}分${remainingSeconds}秒`;
-    }
-    return `${remainingSeconds}秒`;
-}
-
 document.addEventListener('DOMContentLoaded', function () {
     const inputText = document.getElementById('input-text');
     const outputText = document.getElementById('output-text');
@@ -205,7 +196,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const maxPollTime = 1200000; // 最大轮询时间20分钟
             let pollCount = 0;
             const maxPollCount = maxPollTime / pollInterval;
-            let startTime = Date.now();
 
             const pollTaskStatus = async () => {
                 try {
@@ -217,9 +207,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     const statusData = await statusResponse.json();
                     pollCount++;
-                    
-                    const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-                    console.log(`轮询任务状态 ${pollCount}/${maxPollCount}: ${statusData.status}, 已等待: ${formatTime(elapsedSeconds)}`);
 
                     if (statusData.status === 'completed') {
                         // 任务完成，显示结果
@@ -237,13 +224,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         return { done: true, success: false };
                     } else if (pollCount >= maxPollCount) {
                         // 超过最大轮询次数
-                        outputText.value = '翻译任务超时，DeepSeek API需要更多时间处理，请稍后重试';
+                        outputText.value = '翻译任务超时，请稍后重试';
                         translationStatus.textContent = '轮询超时';
                         return { done: true, success: false };
                     } else {
-                        // 任务仍在处理中，更新状态信息
-                        const elapsedMinutes = Math.floor(elapsedSeconds / 60);
-                        translationStatus.textContent = `翻译中... 已等待 ${elapsedMinutes} 分钟，请耐心等待（DeepSeek正在深度思考）`;
+                        // 任务仍在处理中，保持原有状态文本
                         return { done: false };
                     }
                 } catch (error) {
@@ -360,8 +345,4 @@ document.addEventListener('DOMContentLoaded', function () {
         outputText.value = '';
         translationStatus.textContent = languageResources[currentLanguage].waiting;
     }
-
-    // 添加新会话按钮到页面（可选）
-    // 可以在HTML中添加一个按钮，然后在这里绑定事件
-    // document.getElementById('new-session-btn').addEventListener('click', newSession);
 });
