@@ -1,5 +1,5 @@
 // 配置 - 后端API地址
-const API_BASE_URL = 'https://your-username.pythonanywhere.com'; // 替换为您的PythonAnywhere域名
+const API_BASE_URL = 'https://sternchiri.pythonanywhere.com/'; // PythonAnywhere域名
 
 // 语言资源
 const languageResources = {
