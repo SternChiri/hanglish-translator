@@ -1,6 +1,6 @@
-# 漢glish翻訳器 / 漢glish Translator
-
 <div align="center">
+
+# 漢glish翻訳器 / 漢glish Translator
 
 > 中国人 and 日本人 can 相互交流 with 中学生 level 英語 and 漢字。——安处岛
 
