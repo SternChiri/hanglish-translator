@@ -378,8 +378,8 @@ footer {
 
 .close-btn {
     position: absolute;
-    top: 20px;
-    right: 25px;
+    top: 10px;
+    right: 15px;
     background: none;
     border: none;
     font-size: 32px;
