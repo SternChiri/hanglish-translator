@@ -30,21 +30,6 @@
 
 </div>
 
-## 💝 プロジェクト支援 / Support Project
-
-このプロジェクトが気に入ったら、以下の方法で支援いただけます：
-
-<div align="center">
-
-![QR Code](https://via.placeholder.com/200x200/07C160/ffffff?text=WeChat)
-
-</div>
-
-ご支援は以下のために役立てられます：
-- 🚀 プロジェクトの継続的なメンテナンスと更新
-- 🔧 バグ修正
-- 🌐 API費用のサポート
-
 ## 🚀 クイックスタート / Quick Start
 
 ### オンライン利用 / Online Usage
@@ -99,30 +84,20 @@ python app.py
 3. 全ての漢字を保持、仮名を英語に置換
 4. 出力は英語語順に従う
 
-## 🔧 デプロイ説明 / Deployment
+## 💝 プロジェクト支援 / Support Project
 
-### フロントエンドデプロイ
-多数のデプロイプラットフォームをサポート。GitHubリポジトリに接続し、`frontend`をソースディレクトリとして選択すれば自動デプロイ。
+このプロジェクトが気に入ったら、以下の方法で支援いただけます：
 
-### バックエンドデプロイ
-多数のデプロイプラットフォームをサポート。`backend/`ディレクトリの内容をアップロード、またはGitHubリポジトリに接続して自動デプロイ。
+<div align="center">
 
-## 🤝 コントリビューションガイド / Contribution
+![QR Code](frontend/donate.png)
 
-あらゆる形式のコントリビューションを歓迎します！
+</div>
 
-### 問題報告 / Report Issues
-バグを発見したり、改善提案がある場合は、[Issues](https://github.com/sternchiri/hanglish-translator/issues)から報告してください。
-
-### 機能リクエスト / Feature Requests
-新しい機能のアイデアがありますか？[Issues](https://github.com/sternchiri/hanglish-translator/issues)で提案を歓迎します！
-
-### コードコントリビューション / Code Contribution
-1. このプロジェクトをFork
-2. 機能ブランチを作成 (`git checkout -b feature/AmazingFeature`)
-3. 変更をコミット (`git commit -m 'Add some AmazingFeature'`)
-4. ブランチにプッシュ (`git push origin feature/AmazingFeature`)
-5. Pull Requestをオープン
+ご支援は以下のために役立てられます：
+- 🚀 プロジェクトの継続的なメンテナンスと更新
+- 🔧 バグ修正
+- 🌐 API費用のサポート
 
 ## 🙏 謝辞 / Acknowledgments
 

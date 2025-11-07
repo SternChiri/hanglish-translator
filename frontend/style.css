@@ -240,8 +240,22 @@ footer {
         min-height: auto;
     }
     
+    /* 输入区域 - 第一个 */
+    .input-section {
+        order: 1;
+    }
+    
+    /* 翻译按钮 - 在中间 */
     .translate-button-container {
         padding: 16px;
+        order: 2;
+        background-color: var(--secondary-color);
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    /* 输出区域 - 第三个 */
+    .output-section {
         order: 3;
     }
     
@@ -259,7 +273,6 @@ footer {
         padding: 0 16px;
     }
 
-    /* 移动端优化：将语言按钮移到标题下方并居中 */
     .language-toggle {
         position: relative;
         top: auto;
@@ -267,19 +280,19 @@ footer {
         margin: 15px auto 0 auto;
         display: flex;
         justify-content: center;
-        width: fit-content; /* 让按钮宽度根据内容调整 */
+        width: fit-content;
     }
     
     header {
         padding: 20px 0;
-        text-align: center; /* 确保header内容居中 */
+        text-align: center;
     }
 
     .header-content {
         padding-bottom: 0;
         display: flex;
         flex-direction: column;
-        align-items: center; /* 确保所有子元素居中 */
+        align-items: center;
     }
 }
 

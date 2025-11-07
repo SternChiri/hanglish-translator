@@ -31,21 +31,6 @@
 
 </div>
 
-## 💝 支持项目 / Support Project
-
-如果您喜欢这个项目，可以表达您的赞赏：
-
-<div align="center">
-
-![QR Code](https://via.placeholder.com/200x200/07C160/ffffff?text=WeChat)
-
-</div>
-
-您的支持将帮助：
-- 🚀 持续维护和更新项目
-- 🔧 修复bug
-- 🌐 API费用支持
-
 ## 🚀 快速开始 / Quick Start
 
 ### 在线使用 / Online Usage
@@ -100,30 +85,20 @@ python app.py
 3. 保留所有汉字，假名替换为英文
 4. 输出遵循英语语序
 
-## 🔧 部署说明 / Deployment
+## 💝 支持项目 / Support Project
 
-### 前端部署
-支持多种部署平台，连接GitHub仓库，选择`frontend`作为源目录，即可自动部署。
+如果您喜欢这个项目，可以表达您的赞赏：
 
-### 后端部署
-支持多种部署平台，上传 `backend/` 目录内容，或连接GitHub仓库自动部署。
+<div align="center">
 
-## 🤝 贡献指南 / Contribution
+![QR Code](frontend/donate.png)
 
-欢迎各种形式的贡献！
+</div>
 
-### 报告问题 / Report Issues
-如果您发现任何bug或有改进建议，请通过 [Issues](https://github.com/sternchiri/hanglish-translator/issues) 报告。
-
-### 功能请求 / Feature Requests
-有任何新功能想法？欢迎在 [Issues](https://github.com/sternchiri/hanglish-translator/issues) 中提出！
-
-### 代码贡献 / Code Contribution
-1. Fork本项目
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启Pull Request
+您的支持将帮助：
+- 🚀 持续维护和更新项目
+- 🔧 修复bug
+- 🌐 API费用支持
 
 ## 🙏 致谢 / Acknowledgments
 
