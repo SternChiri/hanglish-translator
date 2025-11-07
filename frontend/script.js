@@ -25,7 +25,9 @@ const languageResources = {
         noContent: "没有内容可复制",
         copied: "已复制!",
         maxChars: "字符数超过限制 (最大1000字符)",
-        footer: '<a href="https://github.com/SternChiri/hanglish-translator" style="color: var(--text-light); text-decoration: none;">© 2025 漢glish翻译器</a> | 漢glish概念源自<a href="https://xhslink.com/m/11a8HrimSsm" target="_blank" style="text-decoration: none;">@安处岛</a> | ☕'
+        footer: '<a href="https://github.com/SternChiri/hanglish-translator" style="color: var(--text-light); text-decoration: none;">© 2025 漢glish翻译器</a> | 漢glish概念源自<a href="https://xhslink.com/m/11a8HrimSsm" target="_blank" style="text-decoration: none;">@安处岛</a> | <button class="donate-btn" title="赞赏支持">☕</button>',
+        thankYou: "感谢支持！",
+        donateMessage: "如果这个工具对您有帮助，欢迎请我喝杯咖啡～"
     },
     ja: {
         languageText: "中文",
@@ -49,7 +51,9 @@ const languageResources = {
         noContent: "コピーする内容がありません",
         copied: "コピーしました!",
         maxChars: "文字数制限を超えています (最大1000文字)",
-        footer: '<a href="https://github.com/SternChiri/hanglish-translator" style="color: var(--text-light); text-decoration: none;">© 2025 漢glish翻訳器</a> | 漢glish提案<a href="https://xhslink.com/m/11a8HrimSsm" target="_blank" style="text-decoration: none;">@安处岛</a> | ☕'
+        footer: '<a href="https://github.com/SternChiri/hanglish-translator" style="color: var(--text-light); text-decoration: none;">© 2025 漢glish翻訳器</a> | 漢glish提案<a href="https://xhslink.com/m/11a8HrimSsm" target="_blank" style="text-decoration: none;">@安处岛</a> | <button class="donate-btn" title="寄付で支援">☕</button>',
+        thankYou: "ご支援ありがとうございます！",
+        donateMessage: "このツールがお役に立てれば、コーヒーをご馳走していただけると嬉しいです～"
     }
 };
 
@@ -73,6 +77,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const translationStatus = document.getElementById('translation-status');
     const languageToggle = document.getElementById('language-toggle');
     const languageText = document.getElementById('language-text');
+    const donateModal = document.getElementById('donate-modal');
+    const closeDonate = document.getElementById('close-donate');
+    let donateBtn = null;
 
     // 初始化语言
     updateLanguage();
@@ -332,6 +339,63 @@ document.addEventListener('DOMContentLoaded', function () {
             translateBtn.click();
         }
     });
+
+    // 创建赞赏按钮（因为footer是动态生成的）
+    function initDonateButton() {
+        // 等待footer内容加载完成
+        setTimeout(() => {
+            donateBtn = document.querySelector('.donate-btn');
+            if (donateBtn) {
+                donateBtn.addEventListener('click', openDonateModal);
+            }
+        }, 100);
+    }
+
+    function openDonateModal() {
+        donateModal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // 防止背景滚动
+    }
+
+    function closeDonateModal() {
+        donateModal.classList.remove('active');
+        document.body.style.overflow = ''; // 恢复滚动
+    }
+
+    // 点击关闭按钮
+    closeDonate.addEventListener('click', closeDonateModal);
+
+    // 点击模态框背景关闭
+    donateModal.addEventListener('click', function(e) {
+        if (e.target === donateModal) {
+            closeDonateModal();
+        }
+    });
+
+    // 按ESC键关闭
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && donateModal.classList.contains('active')) {
+            closeDonateModal();
+        }
+    });
+
+    // 初始化赞赏按钮
+    initDonateButton();
+
+    // 在更新语言时重新初始化赞赏按钮
+    const originalUpdateLanguage = updateLanguage;
+    updateLanguage = function() {
+        originalUpdateLanguage();
+        // 重新初始化赞赏按钮，因为footer内容被重新设置了
+        setTimeout(initDonateButton, 100);
+        
+        // 更新浮窗中的文本
+        const resources = languageResources[currentLanguage];
+        document.querySelectorAll('[data-lang-zh], [data-lang-ja]').forEach(element => {
+            if (element.parentElement === donateModal || donateModal.contains(element)) {
+                element.textContent = element.getAttribute(`data-lang-${currentLanguage}`);
+            }
+        });
+    };
 
     // 新会话按钮（如果需要可以添加）
     function newSession() {

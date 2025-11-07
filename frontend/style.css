@@ -294,6 +294,25 @@ footer {
         flex-direction: column;
         align-items: center;
     }
+
+    .donate-content {
+        padding: 25px 20px;
+        margin: 20px;
+        width: calc(100% - 40px);
+        max-width: 500px;
+    }
+    
+    .qrcode-image {
+        max-width: 400px;
+    }
+    
+    .donate-content h3 {
+        font-size: 1.3rem; 
+    }
+    
+    .donate-content p {
+        font-size: 1rem;
+    }
 }
 
 /* 字符数限制样式 */
@@ -312,4 +331,128 @@ footer {
 .translate-btn.disabled:hover {
     background-color: #9e9e9e;
     transform: none;
+}
+
+/* 赞赏浮窗样式 */
+.donate-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.donate-modal.active {
+    display: flex;
+}
+
+.donate-content {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 600px; /* 从 400px 增加到 600px */
+    width: 90%;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    position: relative;
+    text-align: center;
+    animation: modal-appear 0.3s ease-out;
+}
+
+@keyframes modal-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: var(--text-light);
+    cursor: pointer;
+    width: 45px; 
+    height: 45px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.close-btn:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+    color: var(--text-color);
+}
+
+.donate-content h3 {
+    color: var(--text-color);
+    margin-bottom: 15px; 
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.donate-content p {
+    color: var(--text-light);
+    margin-bottom: 25px;
+    line-height: 1.5;
+    font-size: 1rem;
+}
+
+.qrcode-container {
+    margin: 20px 0;
+}
+
+.qrcode-image {
+    max-width: 550px;
+    width: 100%;
+    height: auto;
+}
+
+/* 页脚咖啡按钮样式 */
+#footer-content {
+    position: relative;
+}
+
+.donate-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0;
+    margin: 0 0px;
+    border-radius: 0;
+    transition: all 0.2s;
+    color: var(--text-light);
+}
+
+.donate-btn:hover {
+    background-color: transparent;
+    transform: scale(1.2);
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 480px) {
+    .donate-content {
+        padding: 20px 15px;
+        max-width: 90%;
+    }
+    
+    .qrcode-image {
+        max-width: 350px; /* 在小屏幕上仍然保持较大尺寸 */
+    }
 }
