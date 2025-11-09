@@ -17,7 +17,7 @@ const languageResources = {
         copy: "复制",
         waiting: "等待输入",
         ready: "准备翻译",
-        translating: "正在翻译，请耐心等待...",
+        translating: "耗时较长，请耐心等待...",
         complete: "翻译完成",
         error: "翻译出错",
         networkError: "网络错误",
@@ -26,8 +26,8 @@ const languageResources = {
         copied: "已复制!",
         maxChars: "字符数超过限制 (最大1000字符)",
         footer: '<a href="https://github.com/SternChiri/hanglish-translator" style="color: var(--text-light); text-decoration: none;">© 2025 漢glish翻译器</a> | 漢glish概念源自<a href="https://xhslink.com/m/11a8HrimSsm" target="_blank" style="text-decoration: none;">@安处岛</a> | <button class="donate-btn" title="赞赏支持">☕</button>',
-        thankYou: "感谢支持！",
-        donateMessage: "如果这个工具对您有帮助，欢迎请我喝杯咖啡～"
+        thankYou: "觉得不错？",
+        donateMessage: "欢迎请开发者喝咖啡～"
     },
     ja: {
         languageText: "中文",
@@ -43,7 +43,7 @@ const languageResources = {
         copy: "コピー",
         waiting: "入力待ち",
         ready: "翻訳準備完了",
-        translating: "翻訳中、しばらくお待ちください...",
+        translating: "時間がかかりますので、お待ちください...",
         complete: "翻訳完了",
         error: "翻訳エラー",
         networkError: "ネットワークエラー",
@@ -52,8 +52,8 @@ const languageResources = {
         copied: "コピーしました!",
         maxChars: "文字数制限を超えています (最大1000文字)",
         footer: '<a href="https://github.com/SternChiri/hanglish-translator" style="color: var(--text-light); text-decoration: none;">© 2025 漢glish翻訳器</a> | 漢glish提案<a href="https://xhslink.com/m/11a8HrimSsm" target="_blank" style="text-decoration: none;">@安处岛</a> | <button class="donate-btn" title="寄付で支援">☕</button>',
-        thankYou: "ご支援ありがとうございます！",
-        donateMessage: "このツールがお役に立てれば、コーヒーをご馳走していただけると嬉しいです～"
+        thankYou: "気に入りましたか？",
+        donateMessage: "開発者の方々にコーヒーをご馳走します～"
     }
 };
 
